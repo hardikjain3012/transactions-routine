@@ -36,6 +36,11 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
@@ -69,7 +74,7 @@
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
-                <artifactId>org.jacoco.report</artifactId>
+                <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.10</version>
                 <executions>
                     <execution>
@@ -86,9 +91,9 @@
                         </goals>
                         <configuration>
                             <excludes>
-                                <exclude>**/model/**</exclude>
+                                <exclude>**/exceptions/**</exclude>
                                 <exclude>**/dto/**</exclude>
-                                <exclude>**/exception/**</exclude>
+                                <exclude>**/entity/**</exclude>
                             </excludes>
                         </configuration>
                     </execution>

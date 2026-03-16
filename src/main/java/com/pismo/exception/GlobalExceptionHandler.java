@@ -20,4 +20,13 @@ public class GlobalExceptionHandler {
         ));
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, String>> handleValidationException(Exception ex) {
+        log.error("Validation error: {}", ex.getMessage(), ex);
+        return ResponseEntity.badRequest().body(Map.of(
+                "status", "failed",
+                "message", ex.getMessage()
+        ));
+    }
+
 }

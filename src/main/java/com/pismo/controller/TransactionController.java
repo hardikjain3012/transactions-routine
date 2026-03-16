@@ -2,6 +2,7 @@ package com.pismo.controller;
 
 import com.pismo.dto.TransactionDto;
 import com.pismo.service.TransactionService;
+import com.pismo.service.ValidationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +19,13 @@ public class TransactionController {
     @Autowired
     private TransactionService transactionService;
 
+    @Autowired
+    private ValidationService validationService;
+
     @PostMapping
     public ResponseEntity<String> createTransaction(@RequestBody TransactionDto transactionDto) {
         log.info("Received request to create transaction: {}", transactionDto);
+        validationService.validateCreateTransaction(transactionDto);
         transactionService.createTransaction(transactionDto);
         return ResponseEntity.ok("Transaction created successfully");
     }
