@@ -1,0 +1,86 @@
+# .gitignore for a Spring Boot project deployed with Docker
+# Ignore build outputs, IDE files, OS files, secrets, and Docker/local overrides
+
+# Java class files and archives
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+
+# Maven
+/target/
+!mvnw
+!mvnw.cmd
+.mvn/
+
+# Gradle
+.gradle/
+/build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# IntelliJ IDEA
+/.idea/
+*.iml
+*.iws
+*.ipr
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# VS Code
+.vscode/
+
+# Logs and temp files
+*.log
+logs/
+tmp/
+*.tmp
+*.pid
+
+# Spring Boot
+# Ignore devtools restart files (if present)
+.restart
+
+# Application secrets and environment files
+.env
+.env.*
+application-local.properties
+application-local.yml
+secrets.properties
+
+# Docker
+# Keep Dockerfile and docker-compose.yml tracked, but ignore local overrides and generated artifacts
+docker-compose.override.yml
+docker-compose.*.local.yml
+docker-compose.*.env
+.docker/
+*.tar
+
+# Test / coverage
+coverage/
+jacoco.exec
+
+# Node (if frontend exists in repo)
+node_modules/
+dist/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Misc
+**/target/
+**/build/
+
+# Keep these packaging files out if produced during local builds
+*.log
+*.zip
+*.gz
+
+typeface.json
+
+# End of file
+
