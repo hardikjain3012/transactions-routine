@@ -23,6 +23,8 @@ public class ValidationServiceImpl implements ValidationService {
             throw new IllegalArgumentException("Document number is required");
         } else if (!documentNumber.matches("^\\d{11}$")) {
             throw new IllegalArgumentException("Document number must be exactly 11 digits");
+        } else if (accountRepository.findByDocumentNumber(documentNumber).isPresent()) {
+            throw new IllegalArgumentException("An account with this document number already exists");
         }
     }
 

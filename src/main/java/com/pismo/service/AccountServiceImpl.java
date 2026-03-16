@@ -17,18 +17,22 @@ public class AccountServiceImpl implements AccountService {
     private AccountRepository accountRepository;
 
     @Override
-    public void createAccount(String documentNumber) {
+    public AccountDto createAccount(String documentNumber) {
         Account account = Account.builder()
                 .accountId(UUID.randomUUID().toString())
                 .documentNumber(documentNumber)
                 .build();
         try {
-            accountRepository.save(account);
+            account = accountRepository.save(account);
             log.info("Account created with ID: {}", account.getAccountId());
         } catch (Exception e) {
             log.error("Error creating account: {}", e.getMessage());
             throw new RuntimeException("Failed to create account");
         }
+        return AccountDto.builder()
+                .accountId(account.getAccountId())
+                .documentNumber(account.getDocumentNumber())
+                .build();
     }
 
     @Override
