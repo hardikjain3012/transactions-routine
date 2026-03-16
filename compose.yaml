@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  transactions-routine-app:
+    build: .
+    container_name: transactions-routine-app
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://transactions-db:3306/transactions_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 9868
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.MySQL8Dialect
+      SERVER_PORT: 8080
+    depends_on:
+      - transactions-db
+    command: ["bash","-c","until echo > /dev/tcp/transactions-db/3306 2>/dev/null; do echo Waiting for transactions-db...; sleep 2; done; java -jar /app/app.jar"]
+
+  transactions-db:
+    image: mysql:8.0
+    container_name: transactions-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: 9868
+      MYSQL_DATABASE: transactions_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -p$MYSQL_ROOT_PASSWORD || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  db_data: {}
