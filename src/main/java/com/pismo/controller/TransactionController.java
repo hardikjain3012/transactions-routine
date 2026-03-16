@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/transactions")
 @Slf4j
@@ -23,10 +25,14 @@ public class TransactionController {
     private ValidationService validationService;
 
     @PostMapping
-    public ResponseEntity<String> createTransaction(@RequestBody TransactionDto transactionDto) {
+    public ResponseEntity<Map<String, Object>> createTransaction(@RequestBody TransactionDto transactionDto) {
         log.info("Received request to create transaction: {}", transactionDto);
         validationService.validateCreateTransaction(transactionDto);
-        transactionService.createTransaction(transactionDto);
-        return ResponseEntity.ok("Transaction created successfully");
+        TransactionDto result = transactionService.createTransaction(transactionDto);
+        return ResponseEntity.ok(Map.of(
+                "status", "success",
+                "message", "Transaction created successfully",
+                "data", result
+        ));
     }
 }

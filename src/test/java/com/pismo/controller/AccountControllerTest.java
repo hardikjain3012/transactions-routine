@@ -1,11 +1,16 @@
 package com.pismo.controller;
 
+import com.jayway.jsonpath.JsonPath;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -33,15 +38,27 @@ public class AccountControllerTest {
 
     @Test
     void createAccountFailExistingDocumentNumber() throws Exception {
+        String documentNumber = "00" + System.currentTimeMillis() % 1000000000L; // Generate a unique 11-digit document number
+        MvcResult result = mockMvc.perform(post("/accounts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                        {
+                            "documentNumber": "%s"
+                        }
+                        """.formatted(documentNumber)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("message").value("Account created successfully"))
+                .andReturn();
+
         mockMvc.perform(post("/accounts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                         {
-                            "documentNumber": "12345678900"
+                            "documentNumber": "%s"
                         }
-                        """))
-                .andExpect(status().is5xxServerError())
-                .andExpect(jsonPath("message").value("Failed to create account"));
+                        """.formatted(documentNumber)))
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("message").value("An account with this document number already exists"));
     }
 
     @Test
@@ -54,9 +71,23 @@ public class AccountControllerTest {
 
     @Test
     void getAccountSuccess() throws Exception {
-        mockMvc.perform(get("/accounts/{accountId}", "98ad8f95-0572-449a-82ce-a5a5a577b844")
+        String documentNumber = "00" + System.currentTimeMillis() % 1000000000L; // Generate a unique 11-digit document number
+        MvcResult result = mockMvc.perform(post("/accounts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                        {
+                            "documentNumber": "%s"
+                        }
+                        """.formatted(documentNumber)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("message").value("Account created successfully"))
+                .andReturn();
+
+        String accountId = JsonPath.read(result.getResponse().getContentAsString(), "$.data.accountId");
+
+        mockMvc.perform(get("/accounts/{accountId}", accountId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("accountId").value("98ad8f95-0572-449a-82ce-a5a5a577b844"));
+                .andExpect(jsonPath("accountId").value(accountId));
     }
 }

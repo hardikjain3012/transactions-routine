@@ -1,12 +1,15 @@
 package com.pismo.controller;
 
 import com.pismo.dto.AccountDto;
+import com.pismo.entity.Account;
 import com.pismo.service.AccountService;
 import com.pismo.service.ValidationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/accounts")
@@ -20,11 +23,15 @@ public class AccountController {
     private ValidationService validationService;
 
     @PostMapping
-    public ResponseEntity<String> createAccount(@RequestBody AccountDto accountDto) {
+    public ResponseEntity<Map<String, Object>> createAccount(@RequestBody AccountDto accountDto) {
         log.info("Creating account with document number: {}", accountDto.getDocumentNumber());
         validationService.validateCreateAccount(accountDto);
-        accountService.createAccount(accountDto.getDocumentNumber());
-        return ResponseEntity.ok("Account created successfully");
+        AccountDto result = accountService.createAccount(accountDto.getDocumentNumber());
+        return ResponseEntity.ok(Map.of(
+                "status", "success",
+                "message", "Account created successfully",
+                "data", result
+        ));
     }
 
     @GetMapping("/{accountId}")

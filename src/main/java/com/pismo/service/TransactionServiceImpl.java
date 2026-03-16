@@ -21,7 +21,7 @@ public class TransactionServiceImpl implements TransactionService {
     private TransactionRepository transactionRepository;
 
     @Override
-    public void createTransaction(TransactionDto transactionDto) {
+    public TransactionDto createTransaction(TransactionDto transactionDto) {
         if (transactionDto.getOperationType() != 4 && transactionDto.getAmount().compareTo(BigDecimal.ZERO) > 0) {
             transactionDto.setAmount(transactionDto.getAmount().negate());
         }
@@ -33,11 +33,18 @@ public class TransactionServiceImpl implements TransactionService {
                 .eventDate(LocalDateTime.now())
                 .build();
         try {
-            transactionRepository.save(transaction);
+            transaction = transactionRepository.save(transaction);
             log.info("Transaction created with ID: {}", transaction.getTransactionId());
         } catch (Exception e) {
             log.error("Error creating transaction: {}", e.getMessage());
             throw new RuntimeException("Failed to create transaction: " + e.getMessage());
         }
+        return TransactionDto.builder()
+                .transactionId(transaction.getTransactionId())
+                .accountId(transaction.getAccountId())
+                .operationType(transaction.getOperationType())
+                .amount(transaction.getAmount())
+                .eventDate(transaction.getEventDate().toString())
+                .build();
     }
 }
