@@ -17,7 +17,7 @@ All endpoints use JSON for request/response unless specified otherwise.
   - Response: 200 OK with message "Account created successfully" or 4xx for validation errors.
 
 - GET /accounts/{accountId}
-  - Description: Retrieve an account by its ID.
+  - Description: Retrieve an account by its account id.
   - Response: 200 OK with Account DTO JSON.
 
 - POST /transactions
@@ -39,7 +39,7 @@ The minimal schema includes the following tables (described):
   
 - transactions
   - transaction_id (PK) : string/UUID
-  - account_id (FK -> accounts.id)
+  - account_id : string/UUID (references accounts table)
   - operation_type : bigint (references operation types table)
   - amount : decimal(38,2) NOT NULL
   - event_date : timestamp
@@ -49,7 +49,7 @@ The minimal schema includes the following tables (described):
   - description0 : varchar(255)
 
 Foreign keys:
-- transactions.account_id -> accounts.id
+- transactions.account_id -> accounts.account_id
 - transactions.operation_type -> operation_types.operation_type
 
 ### DDL Commands
