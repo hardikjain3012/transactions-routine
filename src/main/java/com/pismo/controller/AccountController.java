@@ -26,7 +26,7 @@ public class AccountController {
     public ResponseEntity<Map<String, Object>> createAccount(@RequestBody AccountDto accountDto) {
         log.info("Creating account with document number: {}", accountDto.getDocumentNumber());
         validationService.validateCreateAccount(accountDto);
-        AccountDto result = accountService.createAccount(accountDto.getDocumentNumber());
+        AccountDto result = accountService.createAccount(accountDto);
         return ResponseEntity.ok(Map.of(
                 "status", "success",
                 "message", "Account created successfully",

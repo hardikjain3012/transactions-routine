@@ -18,4 +18,5 @@ public class TransactionDto {
     private Long operationType;
     private BigDecimal amount;
     private String eventDate;
+    private BigDecimal availableCreditLimit;
 }
