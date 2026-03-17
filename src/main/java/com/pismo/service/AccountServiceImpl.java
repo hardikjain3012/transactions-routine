@@ -17,10 +17,11 @@ public class AccountServiceImpl implements AccountService {
     private AccountRepository accountRepository;
 
     @Override
-    public AccountDto createAccount(String documentNumber) {
+    public AccountDto createAccount(AccountDto accountDto) {
         Account account = Account.builder()
                 .accountId(UUID.randomUUID().toString())
-                .documentNumber(documentNumber)
+                .documentNumber(accountDto.getDocumentNumber())
+                .creditLimit(accountDto.getCreditLimit())
                 .build();
         try {
             account = accountRepository.save(account);
@@ -32,6 +33,7 @@ public class AccountServiceImpl implements AccountService {
         return AccountDto.builder()
                 .accountId(account.getAccountId())
                 .documentNumber(account.getDocumentNumber())
+                .creditLimit(account.getCreditLimit())
                 .build();
     }
 
@@ -50,6 +52,7 @@ public class AccountServiceImpl implements AccountService {
         return AccountDto.builder()
                 .accountId(account.getAccountId())
                 .documentNumber(account.getDocumentNumber())
+                .creditLimit(account.getCreditLimit())
                 .build();
     }
 }
